@@ -5,7 +5,7 @@
  */
 package informationprocessing;
 
-import implementationconekta.MainThread;
+import main.MainThread;
 
 /**
  * Get some of the fields wich are mandatory to create an Order.

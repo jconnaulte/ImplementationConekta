@@ -7,7 +7,7 @@ package informationprocessing;
 
 import io.conekta.*;
 import org.json.JSONObject;
-import implementationconekta.MainThread;
+import main.MainThread;
 
 /**
  *

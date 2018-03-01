@@ -5,7 +5,7 @@
  */
 package informationprocessing;
 
-import implementationconekta.MainThread;
+import main.MainThread;
 import io.conekta.Customer;
 import io.conekta.Error;
 import io.conekta.ErrorList;
