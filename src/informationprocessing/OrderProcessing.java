@@ -6,9 +6,12 @@
 package informationprocessing;
 
 import forms.CardRecapForm;
-import implementationconekta.MainThread;
+import io.conekta.Charge;
+import main.MainThread;
 import io.conekta.LineItems;
 import io.conekta.Order;
+import io.conekta.OxxoPayment;
+import io.conekta.SpeiPayment;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -60,13 +63,15 @@ public class OrderProcessing {
         System.out.println(order.id);
         LineItems item = (LineItems) order.line_items.get(0);
         CardRecapForm recapForm = new CardRecapForm(order.id, order.amount / 100, item.name, item.quantity, item.unit_price / 100);
-      //  recapForm.start();
+        //  recapForm.start();
     }
 
     // If paid by OXXO
     public void createOxxoStub() throws IOException {
         Order order = MainThread.getInstance().getOrder();
         String normAmount = Float.toString((float) order.amount / (float) 100);
+        Charge charge = (Charge) order.charges.get(0);
+        OxxoPayment oxxoPayment = (OxxoPayment) charge.payment_method;
 
         File file = new File("./src/forms/oxxostub/opps_en.html");
         org.jsoup.nodes.Document doc = Jsoup.parse(file, null);
@@ -75,7 +80,7 @@ public class OrderProcessing {
         div.text("$ " + normAmount + " MXN ");
 
         div = doc.getElementsByClass("opps-reference").first().select("h1").first();
-        div.text(order.id);
+        div.text(oxxoPayment.reference);
 
         FileUtils.writeStringToFile(file, doc.outerHtml(), "UTF-8");
 
@@ -86,6 +91,8 @@ public class OrderProcessing {
     public static void createSpeiStub() throws IOException {
         Order order = MainThread.getInstance().getOrder();
         String normAmount = Float.toString((float) order.amount / (float) 100);
+        Charge charge = (Charge) order.charges.get(0);
+        SpeiPayment speiPayment = (SpeiPayment) charge.payment_method;
 
         File file = new File("./src/forms/speistub/spes_en.html");
         org.jsoup.nodes.Document doc = Jsoup.parse(file, null);
@@ -94,7 +101,7 @@ public class OrderProcessing {
         div.text("$ " + normAmount + " MXN ");
 
         div = doc.getElementsByClass("ps-reference").first().select("h1").first();
-        div.text(order.id);
+        div.text(speiPayment.clabe);
 
         FileUtils.writeStringToFile(file, doc.outerHtml(), "UTF-8");
 
