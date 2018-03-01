@@ -43,17 +43,11 @@ public class OrderProcessing {
         if (type.equals("card")) {
             generateDefaultAnswer();
         } else if (type.equals("oxxo_cash")) {
-            synchronized (MainThread.getInstance()) {
-                MainThread.pause = false;
-                MainThread.getInstance().notify();
-            }
             createOxxoStub();
+            endProgram();
         } else {
             createSpeiStub();
-            synchronized (MainThread.getInstance()) {
-                MainThread.pause = false;
-                MainThread.getInstance().notify();
-            }
+            endProgram();
         }
     }
 
@@ -63,7 +57,6 @@ public class OrderProcessing {
         System.out.println(order.id);
         LineItems item = (LineItems) order.line_items.get(0);
         CardRecapForm recapForm = new CardRecapForm(order.id, order.amount / 100, item.name, item.quantity, item.unit_price / 100);
-        //  recapForm.start();
     }
 
     // If paid by OXXO
@@ -109,7 +102,7 @@ public class OrderProcessing {
     }
 
     // Resume the program and close it
-    public void cardFormEnded() {
+    public void endProgram() {
         synchronized (MainThread.getInstance()) {
             MainThread.pause = false;
             MainThread.getInstance().notify();
